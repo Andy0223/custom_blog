@@ -2,7 +2,7 @@
 
 This is a custom blog project that allows you to create and manage your own blog posts.
 
-This project is based on Vue.js and Node.js with express framework
+This project is based on Vue.js and Node.js with Express framework
 
 ## Installation
 
@@ -44,4 +44,8 @@ This project is based on Vue.js and Node.js with express framework
 Contributions are welcome! If you have any ideas or improvements, feel free to submit a pull request.
 
 ## Demo
+
+https://github.com/Andy0223/custom_blog/assets/62734347/31849e3f-465d-478f-aec2-0344c015ab37
+
+
 
