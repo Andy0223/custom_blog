@@ -1,19 +1,28 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png" />
-    <h1>To-Do List</h1>
-    <PostList msg="Welcome to Your Vue.js App" />
+    <div class="center-logo">
+      <img alt="Vue logo" src="./assets/logo.png" />
+    </div>
+    <Home msg="Welcome to Your Vue.js App" />
   </div>
 </template>
 
 <script>
-// import HelloWorld from "./components/HelloWorld.vue";
-import PostList from "./components/postList.vue";
+import Home from "./components/mainPage.vue";
 
 export default {
   name: "App",
   components: {
-    PostList,
+    Home,
   },
 };
 </script>
+
+<style>
+.center-logo {
+  text-align: center;
+}
+.center-logo img {
+  display: inline-block;
+}
+</style>

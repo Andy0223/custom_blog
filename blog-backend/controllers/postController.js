@@ -11,14 +11,6 @@ exports.createPost = async (req, res) => {
         res.status(201).send('Post created successfully');
         }
     });
-//   try {
-//     const { title, content } = req.body;
-//     const post = await Post.create({ title, content });
-//     res.json(post);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ error: 'Internal Server Error' });
-//   }
 };
 
 // 取得所有文章
@@ -30,13 +22,21 @@ exports.getAllPosts = async (req, res) => {
         res.json(results);
         }
     });
-//   try {
-//     const posts = await Post.find();
-//     res.json(posts);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ error: 'Internal Server Error' });
-//   }
+};
+
+// Search posts by title
+exports.searchPostsByTitle = async (req, res) => {
+    const title = req.query.title;
+    let query = 'SELECT * FROM posts WHERE title LIKE ?';
+    let params = [`%${title}%`];
+
+    db.query(query, params, (err, results) => {
+        if (err) {
+            res.status(500).send(err);
+        } else {
+            res.json(results);
+        }
+    });
 };
 
 // 取得單一文章
@@ -62,21 +62,6 @@ exports.updatePost = async (req, res) => {
         res.status(200).send('Post updated successfully');
         }
     });
-//   try {
-//     const { title, content } = req.body;
-//     const post = await Post.findByIdAndUpdate(
-//       req.params.id,
-//       { title, content },
-//       { new: true }
-//     );
-//     if (!post) {
-//       return res.status(404).json({ error: 'Post not found' });
-//     }
-//     res.json(post);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ error: 'Internal Server Error' });
-//   }
 };
 
 // 刪除文章

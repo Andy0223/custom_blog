@@ -10,7 +10,7 @@ router.post('/', postController.createPost);
 router.get('/', postController.getAllPosts);
 
 // 取得單一文章
-router.get('/:id', postController.getPostById);
+router.get('/', postController.searchPostsByTitle);
 
 // 更新文章
 router.put('/:id', postController.updatePost);
