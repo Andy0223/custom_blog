@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" class="main-page">
     <div class="center-logo">
       <img alt="Vue logo" src="./assets/logo.png" />
     </div>
@@ -24,5 +24,10 @@ export default {
 }
 .center-logo img {
   display: inline-block;
+}
+.main-page {
+  background-image: url("~@/assets/main_bg.jpg"); /* adjust the path to your image file */
+  background-size: cover; /* Cover the entire page */
+  background-position: center; /* Center the image */
 }
 </style>

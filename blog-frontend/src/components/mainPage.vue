@@ -9,17 +9,42 @@
     <div v-for="post in filteredPosts" :key="post.id" class="post">
       <h2>{{ post.title }}</h2>
       <p>{{ post.content }}</p>
-      <button @click="editPost(post)" style="margin-right: 5px">Edit</button>
-      <button @click="confirmDelete(post.id)" style="margin-right: 5px">
+      <button
+        @click="editPost(post)"
+        class="edit-button"
+        style="margin-right: 5px"
+      >
+        Edit
+      </button>
+      <button
+        @click="confirmDelete(post.id)"
+        class="delete-button"
+        style="margin-right: 5px"
+      >
         Delete
       </button>
     </div>
     <form @submit.prevent="submitPost">
-      <label>Title:</label>
-      <input v-model="newPost.title" required />
-      <label>Content:</label>
-      <textarea v-model="newPost.content" required></textarea>
-      <button type="submit">Create Post</button>
+      <label style="font-weight: bold">Title:</label>
+      <input v-model="newPost.title" required ref="titleInput" />
+      <label style="font-weight: bold">Content:</label>
+      <textarea
+        v-model="newPost.content"
+        ref="contentTextarea"
+        required
+      ></textarea>
+      <button v-if="!isEditing" @click="createPost">Create Post</button>
+      <button
+        v-if="isEditing"
+        @click="cancelEdit"
+        class="cancel-button"
+        style="margin-right: 5px"
+      >
+        Cancel
+      </button>
+      <button v-if="isEditing" @click="confirmEdit" style="margin-right: 5px">
+        Confirm
+      </button>
     </form>
   </div>
 </template>
@@ -58,8 +83,10 @@ export default {
       try {
         if (this.editingPost) {
           await updatePost(this.editingPost.id, this.newPost);
+          window.alert("Post updated successfully!");
         } else {
           await createPost(this.newPost);
+          window.alert("Post created successfully!");
         }
         this.resetForm();
         this.fetchPosts();
@@ -75,14 +102,53 @@ export default {
     async deletePost(postId) {
       try {
         await deletePost(postId);
+        window.alert("Post deleted successfully!");
         this.fetchPosts();
       } catch (error) {
         console.error("Error deleting post:", error);
       }
     },
     editPost(post) {
-      this.editingPost = post;
       this.newPost = { ...post };
+      this.editingPost = post;
+      this.isEditing = true;
+      this.$nextTick(() => {
+        this.$refs.titleInput.focus();
+      });
+    },
+    cancelEdit() {
+      if (window.confirm("Are you sure you want to cancel editing?")) {
+        this.isEditing = false;
+        this.editingPost = null;
+        this.newPost = {
+          title: "",
+          content: "",
+        };
+      }
+    },
+    confirmEdit() {
+      if (window.confirm("Are you sure you want to save changes?")) {
+        // Call your API to update the post
+        updatePost(this.editingPost.id, this.newPost)
+          .then(() => {
+            // Update the post in the posts array
+            const index = this.posts.findIndex(
+              (post) => post.id === this.editingPost.id
+            );
+            this.posts.splice(index, 1, this.newPost);
+
+            // Reset the form and exit editing mode
+            this.isEditing = false;
+            this.editingPost = null;
+            this.newPost = {
+              title: "",
+              content: "",
+            };
+          })
+          .catch((error) => {
+            console.error("Failed to update post:", error);
+          });
+      }
     },
     resetForm() {
       this.editingPost = null;
@@ -91,6 +157,21 @@ export default {
         content: "",
       };
     },
+  },
+  watch: {
+    "newPost.content": function () {
+      this.$nextTick(() => {
+        this.$refs.contentTextarea.style.height = "auto";
+        this.$refs.contentTextarea.style.height =
+          this.$refs.contentTextarea.scrollHeight + "px";
+      });
+    },
+  },
+  mounted() {
+    this.$nextTick(() => {
+      this.$refs.contentTextarea.style.height =
+        this.$refs.contentTextarea.scrollHeight + "px";
+    });
   },
   created() {
     this.fetchPosts();
@@ -158,6 +239,38 @@ button {
 
 button:hover {
   background-color: #45a049;
+}
+
+.cancel-button {
+  background-color: #aeaeae; /* Red */
+  color: white;
+}
+
+.cancel-button:hover {
+  background-color: #999999; /* Darker red */
+}
+
+.cancel-button {
+  background-color: #aeaeae; /* Red */
+  color: white;
+}
+
+.delete-button {
+  background-color: #f44336; /* Red */
+  color: white;
+}
+
+.delete-button:hover {
+  background-color: #d32f2f; /* Darker red */
+}
+
+.edit-button {
+  background-color: #ffd53b; /* Yellow */
+  color: black;
+}
+
+.edit-button:hover {
+  background-color: #f0c330; /* Darker yellow */
 }
 
 .center-text {
